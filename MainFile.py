@@ -65,7 +65,7 @@ J = [[[5, 0, 0],
  [5, 5]]]
 
 L = [[[0, 0, 6],
- [6, 6, 6]],
+      [6, 6, 6]],
 [[6, 0],
  [6, 0],
  [6, 6]],
@@ -76,12 +76,12 @@ L = [[[0, 0, 6],
  [0, 6]]]
 
 T = [[[0, 7, 0],
-[7, 7, 7]],
+      [7, 7, 7]],
 [[7, 0],
-[7, 7],
-[7, 0]],
+ [7, 7],
+ [7, 0]],
 [[7, 7, 7],
-[0, 7, 0]],
+ [0, 7, 0]],
 [[0, 7],
 [7, 7],
 [0, 7]]]
@@ -136,7 +136,8 @@ def Check_Lock(ttype, Poss, x, y):
     else:
         for i in range(len(ttype[Poss])):
             for j in range(len(ttype[Poss][i])):
-                if (grid[i + int(y) + 1][j + int(x)] + ttype[Poss][i][j]) != ttype[Poss][i][j]:
+                if ((grid[i + int(y) + 1][j + int(x)] + ttype[Poss][i][j]) != ttype[Poss][i][j]) and\
+                        (ttype[Poss][i][j] != 0):
                     flag = True
     if flag:
         return True
@@ -162,9 +163,9 @@ grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 0, 1, 0, 0, 1, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 1, 1, 0, 0, 0, 1, 1, 1]]
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
 
 run = True
 Flag = True
@@ -180,7 +181,15 @@ while run:
 
     counter += 1
     keys = pygame.key.get_pressed()
-    Shape(cord_x, cord_y, shape_type, shape_pos)
+    if Flag:
+        Shape(cord_x, cord_y, shape_type, shape_pos)
+
+    if not Flag:
+        Flag = True
+        cord_y = 0
+        cord_x = 0
+        shape_type = shapes[random.randint(0, 6)]
+        shape_pos = random.randint(0, len(shape_type) - 1)
 
     if keys[pygame.K_UP]:
         if shape_pos != (len(shape_type) - 1):
@@ -204,7 +213,7 @@ while run:
         draw_window(screen)
         cord_y += 1
 
-    elif (counter % 10) == 0:
+    if not Flag:
         Flag = True
         cord_y = 0
         shape_type = shapes[random.randint(0, 6)]
