@@ -19,7 +19,7 @@ represented in order by 0 - 6
 pygame.font.init()
 
 # GLOBALS VARS
-s_width = 800
+s_width = 500
 s_height = 700
 play_width = 300  # meaning 300 // 10 = 30 width per block
 play_height = 600  # meaning 600 // 20 = 20 height per block
@@ -113,7 +113,7 @@ class Shape:
         self.y = y
         self.type = type
         self.pos = pos
-        global Flag
+        global Flag, DeTime
         if not Check_Lock(self.type, self.pos, self.x, self.y):
             for i in range(len(type[pos])):
                 for j in range(len(type[pos][i])):
@@ -125,6 +125,7 @@ class Shape:
                 for j in range(len(type[pos][i])):
                     if type[pos][i][j] != 0:
                         grid[i + int(y)][j + int(x)] = type[pos][i][j]
+            DeTime = 100
             draw_window(screen)
             Flag = False
 
@@ -145,6 +146,11 @@ def Check_Lock(ttype, Poss, x, y):
         return False
 
 
+def down_line(num):
+    for i in range(num, 0, -1):
+        grid[i] = grid[i - 1]
+
+
 #create_grid()
 grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -163,9 +169,9 @@ grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 1, 0, 1, 0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
+        [2, 0, 2, 0, 0, 0, 0, 0, 0, 0],
+        [2, 2, 2, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1, 0, 1, 1]]
 
 run = True
 Flag = True
@@ -174,8 +180,9 @@ cord_x = 0
 counter = 0
 shape_type = []
 shape_pos = 0
+DeTime = 100
 while run:
-    pygame.time.delay(100)
+    pygame.time.delay(DeTime)
     if counter == 0:
         shape_type = shapes[random.randint(0, 6)]
 
@@ -185,6 +192,10 @@ while run:
         Shape(cord_x, cord_y, shape_type, shape_pos)
 
     if not Flag:
+        for i in range(20):
+            if all(grid[i]) != 0:
+                down_line(i)
+        draw_window(screen)
         Flag = True
         cord_y = 0
         cord_x = 0
@@ -209,15 +220,12 @@ while run:
         draw_window(screen)
         Shape(cord_x, cord_y, shape_type, shape_pos)
 
+    if keys[pygame.K_DOWN]:
+        DeTime = 1
+
     if Flag and ((counter % 10) == 0):
         draw_window(screen)
         cord_y += 1
-
-    if not Flag:
-        Flag = True
-        cord_y = 0
-        shape_type = shapes[random.randint(0, 6)]
-        shape_pos = random.randint(0, len(shape_type))
 
     pygame.display.flip()
     for event in pygame.event.get():
