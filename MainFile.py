@@ -6,7 +6,7 @@ pygame.font.init()
 
 # GLOBALS VARS
 s_width = 500
-s_height = 610
+s_height = 601
 play_width = 300  # meaning 300 // 10 = 30 width per block
 play_height = 600  # meaning 600 // 20 = 20 height per block
 block_size = 30
@@ -84,7 +84,7 @@ shape_colors = [(0, 0, 0), (0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0
 
 def draw():
     global surf
-    screen.blit(surf, (300, 0))
+    screen.blit(surf, (303, 0))
     global Game_score
     font = pygame.font.Font(None, 50)
     text = font.render(str(Game_score), 1, (100, 255, 100))
@@ -97,11 +97,12 @@ def draw():
                                            text_w + 20, text_h + 20), 1)
 
 def draw_window(surface):
-    pygame.draw.rect(screen, (255, 0, 0), (0, 0, play_width, play_height), 1)
     for i in range(20):
         for j in range(10):
+            if shape_colors[grid[i][j]] == (0, 0, 0):
+                pygame.draw.rect(screen, (255, 255, 255), (0 + j * 30, 0 + i * 30, 30, 30), 4)
             pygame.draw.rect(screen, shape_colors[grid[i][j]], (0 + j * 30, 0 + i * 30, 30, 30), 0)
-    pygame.draw.rect(screen, (255, 0, 0), (0, 0, play_width, play_height), 1)
+    pygame.draw.rect(screen, (255, 255, 255), (0, 0, play_width, play_height), 2)
 
 def create_shape():
   pass
@@ -129,7 +130,7 @@ class Shape:
             draw_window(screen)
             Flag = False
 
-all
+
 def Check_Lock(ttype, Poss, x, y):
     flag = False
     global  Game_score
@@ -184,7 +185,7 @@ cord_x = 0
 counter = 0
 shape_type = []
 shape_pos = 0
-DeTime = 10
+DeTime = 100
 Game_score = 0
 while run:
     draw()
@@ -230,7 +231,7 @@ while run:
         Shape(cord_x, cord_y, shape_type, shape_pos)
 
     if keys[pygame.K_DOWN]:
-        DeTime = 1
+        DeTime = 0
 
     if Flag and ((counter % 10) == 0):
         draw_window(screen)
@@ -238,6 +239,9 @@ while run:
 
     pygame.display.flip()
     pygame.time.delay(DeTime)
+    if any(grid[0]) != 0:
+        pygame.time.delay(2000)
+        run = False
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
