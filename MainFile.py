@@ -129,9 +129,10 @@ class Shape:
             draw_window(screen)
             Flag = False
 
-
+all
 def Check_Lock(ttype, Poss, x, y):
     flag = False
+    global  Game_score
     if 20 - len(ttype[Poss]) == y:
         flag = True
     else:
@@ -147,8 +148,11 @@ def Check_Lock(ttype, Poss, x, y):
 
 
 def down_line(num):
+    global Game_score
     for i in range(num, 0, -1):
         grid[i] = grid[i - 1]
+    Game_score += 100
+    print(Game_score)
 
 
 #create_grid()
@@ -169,9 +173,9 @@ grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [2, 0, 2, 0, 0, 0, 0, 0, 0, 0],
-        [2, 2, 2, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 1, 1, 1, 1, 1, 0, 1, 1]]
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
 run = True
 Flag = True
@@ -180,9 +184,10 @@ cord_x = 0
 counter = 0
 shape_type = []
 shape_pos = 0
-DeTime = 100
+DeTime = 10
+Game_score = 0
 while run:
-    pygame.time.delay(DeTime)
+
     if counter == 0:
         shape_type = shapes[random.randint(0, 6)]
 
@@ -203,9 +208,12 @@ while run:
         shape_pos = random.randint(0, len(shape_type) - 1)
 
     if keys[pygame.K_UP]:
-        if shape_pos != (len(shape_type) - 1):
-            shape_pos += 1
-        else:
+        if shape_type[shape_pos] != shape_type[-1]:
+            if not((len(shape_type[shape_pos][0]) < len(shape_type[shape_pos + 1][0])) and
+                   (cord_x > (10 - len(shape_type[shape_pos + 1][0])))):
+                shape_pos += 1
+        elif not((len(shape_type[shape_pos][0]) < len(shape_type[0][0])) and
+                    (cord_x > (10 - len(shape_type[0][0])))):
             shape_pos = 0
         draw_window(screen)
         Shape(cord_x, cord_y, shape_type, shape_pos)
@@ -228,6 +236,7 @@ while run:
         cord_y += 1
 
     pygame.display.flip()
+    pygame.time.delay(DeTime)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
