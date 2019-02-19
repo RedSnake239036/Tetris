@@ -128,6 +128,8 @@ class Shape:
                         grid[i + int(y)][j + int(x)] = type[pos][i][j]
             DeTime = 100
             draw_window(screen)
+            pygame.display.flip()
+            pygame.time.delay(500)
             Flag = False
 
 
@@ -177,7 +179,8 @@ grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-
+flag_left = False
+flag_right = False
 run = True
 Flag = True
 cord_y = 0
@@ -188,6 +191,7 @@ shape_pos = 0
 DeTime = 100
 Game_score = 0
 while run:
+    pygame.display.flip()
     draw()
     if counter == 0:
         shape_type = shapes[random.randint(0, 6)]
@@ -196,7 +200,7 @@ while run:
     keys = pygame.key.get_pressed()
     if Flag:
         Shape(cord_x, cord_y, shape_type, shape_pos)
-
+        pygame.display.flip()
     if not Flag:
         for i in range(20):
             if all(grid[i]) != 0:
@@ -221,14 +225,28 @@ while run:
         Shape(cord_x, cord_y, shape_type, shape_pos)
 
     if keys[pygame.K_LEFT] and cord_x != 0:
-        cord_x -= 1
-        draw_window(screen)
-        Shape(cord_x, cord_y, shape_type, shape_pos)
+        for i in range(len(shape_type[shape_pos])):
+            for j in range(len(shape_type[shape_pos][i])):
+                if ((grid[i + int(cord_y)][j + int(cord_x) - 1] + shape_type[shape_pos][i][j])
+                   != shape_type[shape_pos][i][j]) and (shape_type[shape_pos][i][j] != 0):
+                    flag_left = True
+        if not flag_left:
+            cord_x -= 1
+            draw_window(screen)
+            Shape(cord_x, cord_y, shape_type, shape_pos)
+        flag_left = False
 
     if keys[pygame.K_RIGHT] and cord_x != (10 - len(shape_type[shape_pos][0])):
-        cord_x += 1
-        draw_window(screen)
-        Shape(cord_x, cord_y, shape_type, shape_pos)
+        for i in range(len(shape_type[shape_pos])):
+            for j in range(len(shape_type[shape_pos][i])):
+                if ((grid[i + int(cord_y)][j + int(cord_x) + 1] + shape_type[shape_pos][i][j])
+                   != shape_type[shape_pos][i][j]) and (shape_type[shape_pos][i][j] != 0):
+                    flag_right = True
+        if not flag_right:
+            cord_x += 1
+            draw_window(screen)
+            Shape(cord_x, cord_y, shape_type, shape_pos)
+        flag_right = False
 
     if keys[pygame.K_DOWN]:
         DeTime = 0
